@@ -1,19 +1,19 @@
 var mongoose = require('mongoose');
 
 var Todo = mongoose.model('Todo', {
-  text: {
+  text : {
     type : String,
-    require: true,
-    minlength: 1,
-    trim: true
+    required : true,
+    minlength : 2,
+    trim : true
   },
-  completed: {
-    type: Boolean,
-    default: false
+  completed : {
+    type : Boolean,
+    default : false
   },
-  createdAt: {
-    type: Number,
-    default: null
+  completedAt : {
+    type : Number,
+    default : null
   }
 });
 
