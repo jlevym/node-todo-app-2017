@@ -1,9 +1,9 @@
 
 var express = require('express');
 var bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 var app = express();
-
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -34,13 +34,11 @@ app.post('/users', (req, res) => {
   var user = new User({
     "email": req.body.email
   });
-
- user.save().then((doc) => {
-
-   res.status(200).send(doc);
- }, (e) => {
+   user.save().then((doc) => {
+     res.status(200).send(doc);
+   }, (e) => {
    res.send(e);
- });
+  });
 });
 
 app.get('/users', (req, res) => {
@@ -48,6 +46,20 @@ app.get('/users', (req, res) => {
       res.send({users});
     });
 },(e) =>res.status(400).send(e));
+
+app.get('/users/:id', (req, res) => {
+  var id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send([]);
+  }
+  User.findById(id).then((user) => {
+    res.status(200).send({user});
+  }, (e) => {
+    res.status(400).send(e)
+  });
+});
+
+
 
 app.listen(4000, () => {
   console.log('listening on port 4000');
