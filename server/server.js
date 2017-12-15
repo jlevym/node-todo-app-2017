@@ -30,6 +30,25 @@ app.get('/todos', (req, res) => {
   });
 });
 
+app.post('/users', (req, res) => {
+  var user = new User({
+    "email": req.body.email
+  });
+
+ user.save().then((doc) => {
+
+   res.status(200).send(doc);
+ }, (e) => {
+   res.send(e);
+ });
+});
+
+app.get('/users', (req, res) => {
+    User.find({}).then((users) => {
+      res.send({users});
+    });
+},(e) =>res.status(400).send(e));
+
 app.listen(4000, () => {
   console.log('listening on port 4000');
 });
