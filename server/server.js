@@ -101,14 +101,17 @@ app.patch('/todos/:id', (req, res) => {
 
 // starting users section
 app.post('/users', (req, res) => {
-  var user = new User({
-    "email": req.body.email
-  });
-   user.save().then((doc) => {
-     res.status(200).send(doc);
-   }, (e) => {
-   res.send(e);
-  });
+    var body = _.pick(req.body, ["email", "password"]);
+    var user = new User(body);
+
+   user.save().then(() => {
+     return user.generateAuthToken();
+     // res.send(user);
+   }).then((token) => {
+     res.header('x-auth',token).send(user);
+   }).catch((e) => {
+     res.status(400).send(e);
+   })
 });
 
 app.get('/users', (req, res) => {
