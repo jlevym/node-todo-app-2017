@@ -122,7 +122,7 @@ app.get('/users/me', (req, res) => {
     if (!user) {
 
     }
-  
+
     res.send(user);
   });
 });
