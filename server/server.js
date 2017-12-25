@@ -118,7 +118,6 @@ app.post('/users', (req, res) => {
 });
 
 // login
-
 app.post('/users/login', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
   User.findByCredentials(body.email, body.password).then((user) => {

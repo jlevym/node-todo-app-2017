@@ -248,3 +248,51 @@ describe('GET /Users/me', () => {
       .end(done);
   })
 });
+
+describe('POST /Users/login',() => {
+  it('should return a valid token if a user signs in', (done) => {
+    var email = users[1].email;
+    var password = users[1].password;
+    request(app)
+      .post('/users/login')
+      .send({email, password})
+      .expect(200)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toExist();
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+          User.findById(users[1]._id).then((user) => {
+            expect(user.tokens[0]).toInclude ({
+            access: 'auth',
+            token: res.headers['x-auth']
+            });
+             done();
+          }).catch((e) => done(e));
+      });
+  });
+
+  it('should reject invalid login', (done) => {
+    var email = users[1].email;
+    var password = users[1].password + '1';
+    request(app)
+      .post('/users/login')
+      .send({email, password})
+      .expect(400)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toNotExist();
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        User.findById(_id = users[1]._id).then((user) => {
+          expect(user.tokens.length).toBe(0);
+          done();
+        }).catch((e) => done(e));
+      });
+    });
+  });
