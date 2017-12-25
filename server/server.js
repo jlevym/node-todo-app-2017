@@ -154,6 +154,15 @@ app.get('/users/:id', (req, res) => {
   });
 });
 
+// private route , req.user allows us to pass in user with var user = 'this';
+app.delete('/users/me/token', authenticate, (req, res) => {
+  req.user.removeToken(req.token).then(() => {
+     res.status(200).send();
+  }, () => {
+    res.status(400);
+  });
+});
+
 
 
 app.listen(port, () => {
