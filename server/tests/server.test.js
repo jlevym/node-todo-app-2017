@@ -296,3 +296,37 @@ describe('POST /Users/login',() => {
       });
     });
   });
+
+  describe('DELETE /users/me/token', () => {
+    it('should remove auth token on logout', (done) => {
+      request(app)
+        .delete('/users/me/token')
+        .set('x-auth', users[0].tokens[0].token)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+          User.findById(users[0]._id).then((user) => {
+            expect(user.tokens.length).toBe(0);
+            done();
+          }).catch((e) => done(e));
+      });
+    });
+
+    // it('should return 401 if no valid token is sent', (done) => {
+    //   request(app)
+    //     .delete('/users/me/token')
+    //     .set('x-auth', users[0].tokens[0].token + '1')
+    //     .expect(401)
+    //     .end((err, res) => {
+    //       if (err) {
+    //         return done(err);
+    //       }
+    //       User.findById(users[0]._id).then((user) => {
+    //         expect(user.tokens[0]).toExist()
+    //         done();
+    //       }).catch((e) => done(e));
+    //   });
+    // });
+  });
